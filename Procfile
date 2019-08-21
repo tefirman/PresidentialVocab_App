@@ -1,1 +1,1 @@
-web:gunicorn presidentialvocabs:app
+web: gunicorn app:server

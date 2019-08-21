@@ -12,12 +12,14 @@ import dash_html_components as html
 import pandas as pd
 import plotly.graph_objs as go
 
-""" ADD REPUBLICAN VS DEMOCRAT!!! """
+""" ADD ALL PRESIDENTS OPTION!!! """
 """ FIX TIME ALIGNMENT ISSUE!!! """
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
+server = app.server
 
 df = pd.read_csv('Presidential_Vocabs.csv')
 for col in df.columns:
@@ -130,7 +132,7 @@ def update_graph(yaxis_column_name,xaxis_type):
         }
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server()
 
 
 
