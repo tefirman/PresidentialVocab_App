@@ -30,6 +30,10 @@ del byParty['Total'], totCount
 allPresidents = (df.groupby('Word').Count.sum()/df.Count.sum())\
 .reset_index().rename(index=str,columns={'Count':'Frequency'})
 allPresidents['Name'] = 'All Presidents'
+ngrams = df.groupby('Word').Probability.mean().fillna(0.0).reset_index().rename(index=str,columns={'Probability':'Frequency'})
+ngrams['Name'] = 'Google N-grams (2000)'
+allPresidents = allPresidents.append(ngrams,ignore_index=True)
+del ngrams
 
 available_indicators = df['Word'].unique()
 
@@ -72,13 +76,13 @@ app.layout = html.Div([
 def update_graph(yaxis_column_name,xaxis_type):
     if xaxis_type == 'Overall':
         dff = allPresidents.loc[allPresidents['Word'].isin(yaxis_column_name)]
-        dff = dff.sort_values(by='Word')
+        dff = dff.sort_values(by=['Word','Name'])
         return {
             'data': [go.Bar(
                 x=dff.loc[dff.Word == word,'Name'],
                 y=100*dff.loc[dff.Word == word,'Frequency'],
                 name=word,
-                hovertext='All Presidents<br>' + \
+                hovertext=dff.loc[dff.Word == word,'Name'] + '<br>' + \
                 dff.loc[dff.Word == word,'Word'] + ': ' + \
                 round(100*dff.loc[dff.Word == word,'Frequency'],4).astype(str) + '%',
                 hoverinfo="text"
