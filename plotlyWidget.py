@@ -27,7 +27,9 @@ totCount = df.groupby('Party').Count.sum().reset_index().rename(index=str,column
 byParty = pd.merge(left=byParty,right=totCount,how='inner',on='Party')
 byParty['Frequency'] = byParty.Count/byParty.Total
 del byParty['Total'], totCount
-allPresidents = (df.groupby('Word').Count.sum()/df.Count.sum()).reset_index()
+allPresidents = (df.groupby('Word').Count.sum()/df.Count.sum())\
+.reset_index().rename(index=str,columns={'Count':'Frequency'})
+allPresidents['Name'] = 'All Presidents'
 
 available_indicators = df['Word'].unique()
 
@@ -73,7 +75,7 @@ def update_graph(yaxis_column_name,xaxis_type):
         dff = dff.sort_values(by='Word')
         return {
             'data': [go.Bar(
-                x=['All Presidents'],
+                x=dff.loc[dff.Word == word,'Name'],
                 y=100*dff.loc[dff.Word == word,'Frequency'],
                 name=word,
                 hovertext='All Presidents<br>' + \
