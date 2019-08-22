@@ -12,9 +12,6 @@ import dash_html_components as html
 import pandas as pd
 import plotly.graph_objs as go
 
-""" ADD ALL PRESIDENTS OPTION!!! """
-""" FIX TIME ALIGNMENT ISSUE!!! """
-
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -25,12 +22,12 @@ df = pd.read_csv('Presidential_Vocabs.csv')
 for col in df.columns:
     df[col] = df[col].fillna(0.0)
 del col
-df = pd.merge(left=df,right=pd.read_csv('Presidential_Parties.csv'),how='inner',on='President')
 byParty = df.groupby(['Party','Word']).Count.sum().reset_index()
 totCount = df.groupby('Party').Count.sum().reset_index().rename(index=str,columns={'Count':'Total'})
 byParty = pd.merge(left=byParty,right=totCount,how='inner',on='Party')
 byParty['Frequency'] = byParty.Count/byParty.Total
 del byParty['Total'], totCount
+allPresidents = (df.groupby('Word').Count.sum()/df.Count.sum()).reset_index()
 
 available_indicators = df['Word'].unique()
 
@@ -45,7 +42,7 @@ app.layout = html.Div([
             ),
             dcc.RadioItems(
                 id='crossfilter-xaxis-type',
-                options=[{'label': i, 'value': i} for i in ['By President','By Party']],
+                options=[{'label': i, 'value': i} for i in ['By President','By Party','Overall']],
                 value='By President',
                 labelStyle={'display': 'inline-block'}
             )
@@ -71,6 +68,30 @@ app.layout = html.Div([
     [dash.dependencies.Input('crossfilter-yaxis-column', 'value'),
      dash.dependencies.Input('crossfilter-xaxis-type', 'value')])
 def update_graph(yaxis_column_name,xaxis_type):
+    if xaxis_type == 'Overall':
+        dff = allPresidents.loc[allPresidents['Word'].isin(yaxis_column_name)]
+        dff = dff.sort_values(by='Word')
+        return {
+            'data': [go.Bar(
+                x=['All Presidents'],
+                y=100*dff.loc[dff.Word == word,'Frequency'],
+                name=word,
+                hovertext='All Presidents<br>' + \
+                dff.loc[dff.Word == word,'Word'] + ': ' + \
+                round(100*dff.loc[dff.Word == word,'Frequency'],4).astype(str) + '%',
+                hoverinfo="text"
+            ) for word in yaxis_column_name],
+            'layout': go.Layout(
+                yaxis={
+                    'title': '% of words',
+                    'type': 'linear'
+                },
+                margin={'l': 60, 'b': 80, 't': 10, 'r': 50},
+                height=450,
+                barmode='group',
+                hovermode='closest'
+            )
+        }
     if xaxis_type == 'By Party':
         dff = byParty.loc[byParty['Word'].isin(yaxis_column_name)]
         for word in dff.Word.unique():
@@ -99,7 +120,7 @@ def update_graph(yaxis_column_name,xaxis_type):
                 hovermode='closest'
             )
         }
-    else:
+    elif xaxis_type == 'By President':
         dff = df.loc[df['Word'].isin(yaxis_column_name)]
         for word in dff.Word.unique():
             for president in df.President.unique():
