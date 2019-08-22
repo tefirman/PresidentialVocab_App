@@ -30,10 +30,10 @@ del byParty['Total'], totCount
 allPresidents = (df.groupby('Word').Count.sum()/df.Count.sum())\
 .reset_index().rename(index=str,columns={'Count':'Frequency'})
 allPresidents['Name'] = 'All Presidents'
-ngrams = df.groupby('Word').Probability.mean().fillna(0.0).reset_index().rename(index=str,columns={'Probability':'Frequency'})
-ngrams['Name'] = 'Google N-grams (2000)'
-allPresidents = allPresidents.append(ngrams,ignore_index=True)
-del ngrams
+#ngrams = df.groupby('Word').Probability.mean().fillna(0.0).reset_index().rename(index=str,columns={'Probability':'Frequency'})
+#ngrams['Name'] = 'Google N-grams (2000)'
+#allPresidents = allPresidents.append(ngrams,ignore_index=True)
+#del ngrams
 
 available_indicators = df['Word'].unique()
 
