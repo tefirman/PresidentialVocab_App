@@ -92,7 +92,7 @@ def update_graph(yaxis_column_name,xaxis_type):
                 hovermode='closest'
             )
         }
-    if xaxis_type == 'By Party':
+    elif xaxis_type == 'By Party':
         dff = byParty.loc[byParty['Word'].isin(yaxis_column_name)]
         for word in dff.Word.unique():
             for party in df.Party.unique():
