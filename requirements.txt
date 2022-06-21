@@ -10,6 +10,6 @@ Flask==1.1.1
 Flask-Compress==1.4.0
 Flask-Cors==2.1.2
 gunicorn==19.9.0
-numpy==1.17.0
+numpy==1.22.0
 pandas==0.20.3
 plotly==4.1.0
