@@ -1,0 +1,19 @@
+name: presidential
+dependencies:
+  - python=3.10
+  - numpy
+  - pandas
+  - plotly
+  - dash
+  - dash-core-components
+  - dash-html-components
+  - wget
+  - pip
+  - pip:
+    - python-dotenv
+    - XlsxWriter
+    - matplotlib
+    - beautifulsoup4
+    - Unidecode
+    - lxml
+    - scipy
