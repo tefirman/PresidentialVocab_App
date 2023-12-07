@@ -5,6 +5,7 @@ dash==2.14.2
 Flask==2.2.2
 Flask-Compress==1.14
 Flask-Cors==4.0.0
+Werkzeug==2.2.2
 gunicorn==21.2.0
 numpy==1.26.2
 pandas==2.1.1
